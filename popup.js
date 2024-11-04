@@ -421,10 +421,10 @@ async function performVirtualTryOn(
 
   function checkAndShowSettings() {
     const openAIApiKey = localStorage.getItem('openAIApiKey');
-    const cloudName = localStorage.getItem('cloudName');
-    const uploadPreset = localStorage.getItem('uploadPreset');
+    //const cloudName = localStorage.getItem('cloudName');
+    //const uploadPreset = localStorage.getItem('uploadPreset');
 
-    if (!openAIApiKey || !cloudName || !uploadPreset) {
+    if (!openAIApiKey) { // || !cloudName || !uploadPreset) {
       showSettings();
     }
   }
