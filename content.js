@@ -22,6 +22,11 @@ async function getProductImageUrl(openAIApiKey, openAIApi) {
         resolve({productImageUrl: imgEles[0].src});
       });
   }
+  if (document.querySelectorAll("[content='Gradio']").length > 0) {
+      return new Promise((resolve, reject) => {
+        resolve({productImageUrl: imgEles[0].src});
+      });
+  }
 
   const htmlContent = document.documentElement.outerHTML;
   const productImageUrl = await getProductImageFromGPT(

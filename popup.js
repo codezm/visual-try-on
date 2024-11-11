@@ -137,9 +137,11 @@ document.addEventListener('DOMContentLoaded', function () {
         deleteCachedImage(url, imgContainer);
       });
 
-      imgContainer.appendChild(img);
-      imgContainer.appendChild(deleteBtn);
-      cachedImagesDiv.appendChild(imgContainer);
+      img.onload = function() {
+          imgContainer.appendChild(img);
+          imgContainer.appendChild(deleteBtn);
+          cachedImagesDiv.appendChild(imgContainer);
+      }
     });
   }
 
@@ -414,8 +416,8 @@ async function performVirtualTryOn(
     resultDiv.appendChild(img);
   }
 
-  const settingsButton = document.getElementById('settingsButton');
-  settingsButton.addEventListener('click', toggleSettings);
+  //const settingsButton = document.getElementById('settingsButton');
+  //settingsButton.addEventListener('click', toggleSettings);
 
   checkAndShowSettings();
 
