@@ -5,8 +5,39 @@ document.addEventListener('DOMContentLoaded', function () {
   const loadingMessage = document.getElementById('loadingMessage');
   const personImageInput = document.getElementById('personImage');
   const cachedImagesDiv = document.getElementById('cachedImages');
+  const gradioDiv = document.getElementById('gradio');
 
   let selectedImageUrl = null;
+
+  //setInterval(function (){
+      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        chrome.scripting.executeScript(
+          {
+            target: { tabId: tabs[0].id },
+            files: ['content.js'],
+          },
+          () => {
+            chrome.tabs.sendMessage(
+              tabs[0].id,
+              { action: 'detectTargetSite'},
+              function (response) {
+                console.log(typeof response);
+                //for(var i=0; i<response.length; i++) {
+                    //console.log(response[i]);
+                    //response[i].addEventListener('click', function() {
+                      //console.log(this.getAttribute("data-index"));
+                    //})
+                //}
+                if (response && response === "isGradio") {
+                    gradioDiv.style.display = 'block';
+                }
+              }
+            )
+
+          }
+        );
+      });
+  //}, 1000)
 
   // Load and display cached images
   loadCachedImages();
@@ -85,6 +116,14 @@ document.addEventListener('DOMContentLoaded', function () {
     resultDiv.textContent = '';
     tryOnButton.disabled = true;
 
+    const selectImgs = document.getElementsByName("selectImg");
+    let selectImgIndex = 0;
+    for (i=0; i<selectImgs.length; i++) {
+        if (selectImgs[i].checked) {
+          selectImgIndex = selectImgs[i].value;
+        }
+    }
+
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       const currentPageUrl = tabs[0].url; // Get the current page URL
       const openAIApiKey = localStorage.getItem('openAIApiKey');
@@ -97,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function () {
         () => {
           chrome.tabs.sendMessage(
             tabs[0].id,
-            { action: 'getProductImage', openAIApiKey: openAIApiKey, openAIApi: openAIApi },
+            { action: 'getProductImage', openAIApiKey: openAIApiKey, openAIApi: openAIApi, selectImgIndex: selectImgIndex },
             function (response) {
               if (response && response.productImageUrl) {
                 performVirtualTryOn(

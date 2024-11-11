@@ -199,10 +199,17 @@
     <div id="cachedImages">
       <!-- Cached images will be inserted here -->
     </div>
+    <div id="gradio" style="display: none;">
+        <input type="radio" name="selectImg" value="0"> 1
+        <input type="radio" name="selectImg" value="1"> 2
+        <input type="radio" name="selectImg" value="2"> 3
+        <input type="radio" name="selectImg" value="3"> 4
+        <input type="radio" name="selectImg" value="4"> 5
+    </div>
     <button id="tryOn" disabled>Try On</button>
     <div id="loader" class="loader"></div>
     <div id="loadingMessage">It may take around 30s to dress up the person</div>
-    <div id="result">Please fill <a href="https://tally.so/r/mYYjoz" target="_blank">this form</a> to get notified about the<br/>official release of this extension.</div>
+    <div id="result"></div>
     <input type="file" id="personImage" accept="image/*" style="display: none;">
   </div>
  
@@ -220,7 +227,7 @@
       <button id="saveSettings" type="submit">Save</button>
     </form>
   </div>
-  <span id="credit">Created by <a href="https://shyjal.com" target="_blank">Shyjal</a></span>
+  <!--<span id="credit">Created by <a href="https://shyjal.com" target="_blank">Shyjal</a></span>-->
   <script src="utils.js"></script>
   <script src="settings.js"></script>
   <script src="popup.js"></script>
