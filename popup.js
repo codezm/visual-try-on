@@ -5,39 +5,52 @@ document.addEventListener('DOMContentLoaded', function () {
   const loadingMessage = document.getElementById('loadingMessage');
   const personImageInput = document.getElementById('personImage');
   const cachedImagesDiv = document.getElementById('cachedImages');
-  const gradioDiv = document.getElementById('gradio');
+  //const gradioDiv = document.getElementById('gradio');
 
   let selectedImageUrl = null;
+//  chrome.runtime.onMessageExternal.addListener(function(request, sender, sendResponse) {
+//  // 可以针对sender做一些白名单检查
+//  // sendResponse返回响应
+//  if (request.type == 'MsgFromPage') {
+//    sendResponse({tyep: 'MsgFromChrome', msg: 'Hello, I am chrome extension~'});
+//  }
+//});
+//
 
   //setInterval(function (){
-      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        chrome.scripting.executeScript(
-          {
-            target: { tabId: tabs[0].id },
-            files: ['content.js'],
-          },
-          () => {
-            chrome.tabs.sendMessage(
-              tabs[0].id,
-              { action: 'detectTargetSite'},
-              function (response) {
-                console.log(typeof response);
-                //for(var i=0; i<response.length; i++) {
-                    //console.log(response[i]);
-                    //response[i].addEventListener('click', function() {
-                      //console.log(this.getAttribute("data-index"));
-                    //})
-                //}
-                if (response && response === "isGradio") {
-                    gradioDiv.style.display = 'block';
-                }
-              }
-            )
-
-          }
-        );
-      });
-  //}, 1000)
+//      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+//        chrome.scripting.executeScript(
+//          {
+//            target: { tabId: tabs[0].id },
+//            files: ['content.js'],
+//          },
+//          () => {
+//            chrome.tabs.sendMessage(
+//              tabs[0].id,
+//              { action: 'detectTargetSite'},
+//              function (response) {
+//                console.log(typeof response);
+//                //for(var i=0; i<response.length; i++) {
+//                    //console.log(response[i]);
+//                    //response[i].addEventListener('click', function() {
+//                      //console.log(this.getAttribute("data-index"));
+//                    //})
+//                //}
+//                if (response && response === "isGradio") {
+//                    gradioDiv.style.display = 'block';
+//                }
+//              }
+//            )
+//
+//          }
+//        );
+//      });
+//  //}, 1000)
+//chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+//    console.log("popup.js", request.info)
+//    // 这里是返回给bg的内容
+//    sendResponse('get the message')
+//})
 
   // Load and display cached images
   loadCachedImages();

@@ -3,7 +3,7 @@
   "name": "Virtual Try On Clothes",
   "version": "1.0",
   "description": "Try on clothes virtually on any ecommerce store",
-  "permissions": ["activeTab", "scripting", "storage"],
+  "permissions": ["activeTab", "scripting", "storage", "contextMenus"],
   "host_permissions": [
     "https://kwai-kolors-kolors-virtual-try-on.hf.space/*",
     "https://api.openai.com/*"
@@ -26,5 +26,11 @@
       "matches": ["<all_urls>"],
       "js": ["content.js"]
     }
-  ]
+  ],
+  "externally_connectable": {
+      "matches": ["*://192.168.36.35:*/*"]
+  },
+  "background": {
+      "service_worker": "backend.js"
+  }
 }

@@ -1,5 +1,6 @@
 var selectImgIndexGlobal = -1;
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    console.log("content.js", request)
   if (request.action === 'getProductImage') {
     getProductImageUrl(request.openAIApiKey, request.openAIApi, request.selectImgIndex).then(sendResponse);
     return true; // Indicates we will send a response asynchronously
@@ -13,47 +14,66 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     console.log(request);
     return true;
   }
+
+  if (request.action === 'setImgUrl') {
+    selectImgIndexGlobal = request.imgUrl;
+    if (document.querySelectorAll("[content='Gradio']").length > 0) {
+    let imgDivs = document.querySelectorAll(".image-frame img");
+    //var btnEles = [];
+    for(var i = 0; i < imgDivs.length; i++) {
+        if (imgDivs[i].src === request.imgUrl) {
+            imgDivs[i].setAttribute('data-index', 1);
+        } else {
+            imgDivs[i].setAttribute('data-index', -1);
+        }
+    }}
+    return true;
+  }
 });
 
 function detectTargetSite() {
   if (document.querySelectorAll("[content='Gradio']").length > 0) {
-    //let imgDivs = document.querySelectorAll(".image-frame");
-    //var btnEles = [];
-    //for(var i = 0; i < imgDivs.length; i++) {
-    //    var btn = document.createElement("button");
-    //    btn.innerHTML = '试穿';
-    //    btn.style.backgroundColor = 'white';
-    //    btn.style.color = 'black';
-    //    btn.style.padding = '10px 20px';
-    //    btn.style.border = 'none';
-    //    btn.style.bottom = '10px';
-    //    btn.style.right = '10px';
-    //    btn.style.borderRadius = '5px';
-    //    btn.style.cursor = 'pointer';
-    //    btn.style.position = 'absolute';
-    //    btn.setAttribute('data-index', i);
-    //    btn.addEventListener('click', function() {
-    //        selectImgIndexGlobal = this.getAttribute("data-index");
-
-    //        console.log(selectImgIndexGlobal);
-    //    //    //chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    //    //        //if (tabs.length > 0) {
-    //    //            // 打开browser action的popup页面
-    //    //            //chrome.browserAction.getPopup();
-    //    //            //console.log(chrome.action);
-    //    //            //chrome.action.openPopup();
-    //    //        //}
-    //    //    //});
-    //    //    // 这里的代码会在按钮被点击时执行
-    //    //    //chrome.runtime.sendMessage({action: "openPopup", imageUrl: selectImgIndexGlobal}, function() {
-    //    //    //    console.log('ook')
-    //    //    //});
-    //    });
-
-    //    //imgDivs[i].appendChild(`<button style="position: absolute; bottom: 10px; right: 10px; background-color: white; border: none; color: black; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; cursor: pointer; border-radius: 5px;" onclick="toggleButtonColor(this)">试穿</button>`)
-    //    btnEles.push(btn);
-    //    imgDivs[i].appendChild(btn);
-    //}
+//    let imgDivs = document.querySelectorAll(".image-frame");
+//    //var btnEles = [];
+//    for(var i = 0; i < imgDivs.length; i++) {
+//        var btn = document.createElement("button");
+//        btn.innerHTML = '试穿';
+//        btn.style.backgroundColor = 'white';
+//        btn.style.color = 'black';
+//        btn.style.padding = '10px 20px';
+//        btn.style.border = 'none';
+//        btn.style.bottom = '10px';
+//        btn.style.right = '10px';
+//        btn.style.borderRadius = '5px';
+//        btn.style.cursor = 'pointer';
+//        btn.style.position = 'absolute';
+//        btn.setAttribute('data-index', i);
+//        btn.addEventListener('click', function() {
+//            var targetExtensionId = "eojnolahepnlgkkmenhojdefnhoeibkk"; // 插件的ID
+//            chrome.runtime.sendMessage(targetExtensionId, {type: 'MsgFromPage', msg: 'Hello, I am page~'}, function(response) {
+//              console.log(response);
+//            });
+//    //        selectImgIndexGlobal = this.getAttribute("data-index");
+//
+//    //        console.log(selectImgIndexGlobal);
+//    //    //    //chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+//    //    //        //if (tabs.length > 0) {
+//    //    //            // 打开browser action的popup页面
+//    //    //            //chrome.browserAction.getPopup();
+//    //    //            //console.log(chrome.action);
+//    //    //            //chrome.action.openPopup();
+//    //    //        //}
+//    //    //    //});
+//    //    //    // 这里的代码会在按钮被点击时执行
+//    //    //    //chrome.runtime.sendMessage({action: "openPopup", imageUrl: selectImgIndexGlobal}, function() {
+//    //    //    //    console.log('ook')
+//    //    //    //});
+//        });
+//
+//        //imgDivs[i].appendChild(`<button style="position: absolute; bottom: 10px; right: 10px; background-color: white; border: none; color: black; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; cursor: pointer; border-radius: 5px;" onclick="toggleButtonColor(this)">试穿</button>`)
+//    //    btnEles.push(btn);
+//        imgDivs[i].appendChild(btn);
+//    }
     
     return "isGradio";
   }
@@ -77,8 +97,14 @@ async function getProductImageUrl(openAIApiKey, openAIApi, selectImgIndex) {
         resolve({productImageUrl: imgEles[0].src});
       });
   }
-  console.log("selectImgIndexGlobal: ", selectImgIndexGlobal)
+  //console.log("selectImgIndexGlobal: ", selectImgIndexGlobal)
   if (document.querySelectorAll("[content='Gradio']").length > 0) {
+      var imgEle = document.querySelector('[data-index="1"]');
+      if (imgEle) {
+          return new Promise((resolve, reject) => {
+            resolve({productImageUrl: imgEle.src});
+          });
+      }
       return new Promise((resolve, reject) => {
         resolve({productImageUrl: imgEles[selectImgIndex].src});
       });
