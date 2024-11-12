@@ -81,8 +81,10 @@ document.addEventListener('DOMContentLoaded', function () {
     } else if (personImageInput.files.length > 0) {
       const personImageFile = personImageInput.files[0];
 
+      loadingMessage.textContent = "Uploading person picture..."
       uploadImgToHf(personImageFile).then((personImageUrl) => {
           console.log("personImageUrl", personImageUrl);
+          loadingMessage.textContent = "Uploading person picture successful..."
 
           const newCachedImage = cacheImage(personImageUrl);
           selectCachedImage(newCachedImage, personImageUrl);
@@ -163,7 +165,6 @@ document.addEventListener('DOMContentLoaded', function () {
       imgContainer.classList.add('image-container');
 
       const img = document.createElement('img');
-      //img.src = url;
       img.src = "https://kwai-kolors-kolors-virtual-try-on.hf.space/file=" + url;
       img.classList.add('cached-image');
       img.addEventListener('click', () => selectCachedImage(img, url));
@@ -180,6 +181,9 @@ document.addEventListener('DOMContentLoaded', function () {
           imgContainer.appendChild(img);
           imgContainer.appendChild(deleteBtn);
           cachedImagesDiv.appendChild(imgContainer);
+      }
+      img.onerror = function() {
+        deleteCachedImage(url, imgContainer);
       }
     });
   }
@@ -396,6 +400,7 @@ async function performVirtualTryOn(
               //const data = JSON.parse(lines[i + 1].split('data: ')[1]);
               const data = JSON.parse(lines[i].split('data: ')[1]);
               console.log('data', data);
+              loadingMessage.textContent = lines[i];
               // data: {"msg":"process_completed","event_id":"9f5e9477fac649a7b3171ae2b78cac19","output":{"data":[{"path":"/tmp/gradio/2c0e3039e9797016b4a17cadfd2d2d77b442db23ecd9eda5f811f52d109f52f9/image.webp","url":"https://kwai-kolors-kolors-virtual-try-on.hf.space/file=/tmp/gradio/2c0e3039e9797016b4a17cadfd2d2d77b442db23ecd9eda5f811f52d109f52f9/image.webp","size":null,"orig_name":"image.webp","mime_type":null,"is_stream":false,"meta":{"_type":"gradio.FileData"}},94219,"Success"],"is_generating":false,"duration":22.94722294807434,"average_duration":39.17741922320664,"render_config":null,"changed_state_ids":[]},"success":true}
               if (data['msg'] === 'process_completed') {
                 if (data['success']) {
@@ -451,8 +456,10 @@ async function performVirtualTryOn(
     const img = document.createElement('img');
     img.src = resultUrl;
     img.style.maxWidth = '100%';
-    resultDiv.innerHTML = '';
-    resultDiv.appendChild(img);
+    img.onload = function() {
+        resultDiv.innerHTML = '';
+        resultDiv.appendChild(img);
+    }
   }
 
   //const settingsButton = document.getElementById('settingsButton');
