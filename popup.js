@@ -5,52 +5,42 @@ document.addEventListener('DOMContentLoaded', function () {
   const loadingMessage = document.getElementById('loadingMessage');
   const personImageInput = document.getElementById('personImage');
   const cachedImagesDiv = document.getElementById('cachedImages');
-  //const gradioDiv = document.getElementById('gradio');
 
   let selectedImageUrl = null;
-//  chrome.runtime.onMessageExternal.addListener(function(request, sender, sendResponse) {
-//  // 可以针对sender做一些白名单检查
-//  // sendResponse返回响应
-//  if (request.type == 'MsgFromPage') {
-//    sendResponse({tyep: 'MsgFromChrome', msg: 'Hello, I am chrome extension~'});
-//  }
-//});
-//
+  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      chrome.scripting.executeScript(
+          {
+              target: { tabId: tabs[0].id },
+              files: ['content.js'],
+          },
+          () => {
+              chrome.tabs.sendMessage(
+                  tabs[0].id,
+                  { action: 'detectTargetSite'},
+                  function (response) {
+                  }
+              )
 
-  //setInterval(function (){
-//      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-//        chrome.scripting.executeScript(
-//          {
-//            target: { tabId: tabs[0].id },
-//            files: ['content.js'],
-//          },
-//          () => {
-//            chrome.tabs.sendMessage(
-//              tabs[0].id,
-//              { action: 'detectTargetSite'},
-//              function (response) {
-//                console.log(typeof response);
-//                //for(var i=0; i<response.length; i++) {
-//                    //console.log(response[i]);
-//                    //response[i].addEventListener('click', function() {
-//                      //console.log(this.getAttribute("data-index"));
-//                    //})
-//                //}
-//                if (response && response === "isGradio") {
-//                    gradioDiv.style.display = 'block';
-//                }
-//              }
-//            )
-//
-//          }
-//        );
-//      });
-//  //}, 1000)
-//chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-//    console.log("popup.js", request.info)
-//    // 这里是返回给bg的内容
-//    sendResponse('get the message')
-//})
+          }
+      );
+  });
+
+  setInterval(function() {
+    chrome.storage.sync.get('msg', ({ msg }) => {
+        if (msg) {
+            console.log(msg);
+            const cachedImageEls = document.querySelectorAll(".cached-image")
+            if (cachedImageEls.length > 0) {
+                console.log("试穿...");
+                cachedImageEls[0].click();
+                document.querySelector("#tryOn").click();
+            }
+            chrome.storage.sync.remove('msg', () => {
+                console.log('clear key: msg')
+            })
+        }
+    });
+  }, 1000)
 
   // Load and display cached images
   loadCachedImages();
@@ -131,14 +121,6 @@ document.addEventListener('DOMContentLoaded', function () {
     resultDiv.textContent = '';
     tryOnButton.disabled = true;
 
-    const selectImgs = document.getElementsByName("selectImg");
-    let selectImgIndex = 0;
-    for (i=0; i<selectImgs.length; i++) {
-        if (selectImgs[i].checked) {
-          selectImgIndex = selectImgs[i].value;
-        }
-    }
-
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       const currentPageUrl = tabs[0].url; // Get the current page URL
       const openAIApiKey = localStorage.getItem('openAIApiKey');
@@ -151,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function () {
         () => {
           chrome.tabs.sendMessage(
             tabs[0].id,
-            { action: 'getProductImage', openAIApiKey: openAIApiKey, openAIApi: openAIApi, selectImgIndex: selectImgIndex },
+            { action: 'getProductImage', openAIApiKey: openAIApiKey, openAIApi: openAIApi },
             function (response) {
               if (response && response.productImageUrl) {
                 performVirtualTryOn(

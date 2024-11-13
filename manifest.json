@@ -27,10 +27,7 @@
       "js": ["content.js"]
     }
   ],
-  "externally_connectable": {
-      "matches": ["*://192.168.36.35:*/*"]
-  },
   "background": {
-      "service_worker": "backend.js"
+      "service_worker": "background.js"
   }
 }

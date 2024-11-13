@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Virtual Try-On</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
       width: 400px;
@@ -115,6 +114,7 @@
       color: #7f8c8d;
       margin-top: 10px;
       display: none;
+      word-break: break-all;
     }
     #result {
       margin-top: 20px;
@@ -199,13 +199,6 @@
     <div id="cachedImages">
       <!-- Cached images will be inserted here -->
     </div>
-    <!--<div id="gradio" style="display: none;">-->
-        <!--<input type="radio" name="selectImg" value="0" checked> 1-->
-        <!--<input type="radio" name="selectImg" value="1"> 2-->
-        <!--<input type="radio" name="selectImg" value="2"> 3-->
-        <!--<input type="radio" name="selectImg" value="3"> 4-->
-        <!--<input type="radio" name="selectImg" value="4"> 5-->
-    <!--</div>-->
     <button id="tryOn" disabled>Try On</button>
     <div id="loader" class="loader"></div>
     <div id="loadingMessage">It may take around 30s to dress up the person</div>
@@ -220,14 +213,9 @@
       <input type="text" id="openAIApiKey" name="openAIApiKey"><br><br>
       <label for="openAIApi">OpenAI API:</label>
       <input type="text" id="openAIApi" name="openAIApi" value="https://api.openai.com/v1/chat/completions"><br><br>
-      <!--<label for="cloudName">Cloudinary Cloud Name:</label>-->
-      <!--<input type="text" id="cloudName" name="cloudName"><br><br>-->
-      <!--<label for="uploadPreset">Cloudinary Upload Preset:</label>-->
-      <!--<input type="text" id="uploadPreset" name="uploadPreset"><br><br>-->
       <button id="saveSettings" type="submit">Save</button>
     </form>
   </div>
-  <!--<span id="credit">Created by <a href="https://shyjal.com" target="_blank">Shyjal</a></span>-->
   <script src="utils.js"></script>
   <script src="settings.js"></script>
   <script src="popup.js"></script>
