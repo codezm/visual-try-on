@@ -24,8 +24,12 @@ document
 document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('openAIApiKey').value =
     localStorage.getItem('openAIApiKey') || '';
-  document.getElementById('openAIApi').value =
-    localStorage.getItem('openAIApi') || '';
+  let openAIApiValue = localStorage.getItem('openAIApi')
+  if (openAIApiValue) {
+      document.getElementById('openAIApi').value = openAIApiValue;
+  }
+  //document.getElementById('openAIApi').value =
+    //localStorage.getItem('openAIApi') || '';
   //document.getElementById('cloudName').value =
     //localStorage.getItem('cloudName') || '';
   //document.getElementById('uploadPreset').value =
